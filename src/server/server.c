@@ -15,11 +15,16 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 #include <sys/wait.h>
 #include <signal.h>
 
+#include <limits.h>
 
 #define BUFFERLEN 1000   // how many pending connections queue will hold
 
-
 int main() {
+  double port;
+  printf("Enter port number: ");
+  scanf("%lf", &port);
+  printf("hostname: %s\n", hostname);
+
   char buffer[BUFFERLEN] = {0};
   struct sockaddr_in servaddr = {0};
 
@@ -32,7 +37,7 @@ int main() {
   }
 
   servaddr.sin_family = AF_INET;
-  servaddr.sin_port = htons(12345);
+  servaddr.sin_port = htons(port);
   servaddr.sin_addr.s_addr = INADDR_ANY;
 
   int reciv = bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)); // bind the made socket to reciv

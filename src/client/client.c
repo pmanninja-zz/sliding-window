@@ -16,13 +16,16 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 
 
 int main() {
-  //char * hello = "Hello i am working";
   char  packet[100];
-  printf("Enter your transmision: ");
+  double port;
+  printf("%s","Enter your transmision: ");
   fgets(packet, 100, stdin);
+  printf("%s","Enter port number: ");
+  scanf("%lf", &port);
 
   struct sockaddr_in servaddr = {0};
-  
+
+
   int sockfd = socket(AF_INET, SOCK_DGRAM, 0);
 
   if (sockfd == -1) {
@@ -31,7 +34,7 @@ int main() {
   }
 
   servaddr.sin_family = AF_INET;
-  servaddr.sin_port = htons(12345);
+  servaddr.sin_port = htons(port);
   servaddr.sin_addr.s_addr = INADDR_ANY;
 
 
