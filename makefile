@@ -1,12 +1,14 @@
-CFILES   = $(wildcard *.c)
-CPPFILES = $(wildcard *.cpp)
-OBJFILES = $(CFILES:.c=.o) $(CPPFILES:.cpp=.o)
-OUT      = main
+server: server.o 
+    g++ server.o -o server
 
-CC = g++
+client: client.o 
+    g++ client.o -o client
 
-$(OUT): $(OBJFILES)
+server.o: server.cpp
+    g++ -C server.cpp
 
-.PHONY: clean
+client.o: client.cpp
+    g++ -C client.cpp
+
 clean:
-	rm -f $(OBJFILES) $(OUT)
+    rm *.o server client
