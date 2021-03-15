@@ -104,8 +104,10 @@ int main() {
     clearBuf(buffer);
 
     nbytes = recvfrom(sockfd, buffer, BUFFERLEN, sendrecvflag, (struct sockaddr*)&servaddr, &addrlen);
-
-    fp = fopen(buffer,"r");
+    char path[100] = "./src/server/";
+    strcat(path,buffer);
+    
+    fp = fopen(path,"r");
     printf("\nFile Name Received: %s\n",buffer);
     if(fp == NULL) {
       printf("\nFile Open Failed!\n");
