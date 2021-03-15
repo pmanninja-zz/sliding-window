@@ -23,17 +23,16 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 #define nofile "File Not Found!"
 
 void clearBuf(char* b);
-int sendFile(FILE* fp, char* buf, int s);
 int recvFile(char* buf, int s);
 char Cipher(char ch);
 
 int main() {
-  int sockfd, nbytes, len, selection, port;
+  int sockfd, nbytes, selection, port;
   char address[20];
   struct sockaddr_in servaddr;
   int addrlen = sizeof(servaddr);
   char buffer[BUFFERLEN];
-  FILE* fp;
+
 
   printf("%s","Enter Port Number (example: 15050) enter 2 to use default: ");
   scanf("%d", &port);
@@ -137,28 +136,4 @@ int recvFile(char* buf, int s)
             printf("%c", ch);
     }
     return 0;
-}
-
-// function sending file
-int sendFile(FILE* fp, char* buf, int s) {
-    int i, len;
-    if (fp == NULL) {
-        strcpy(buf, nofile);
-        len = strlen(nofile);
-        buf[len] = EOF;
-        for (i = 0; i <= len; i++)
-            buf[i] = Cipher(buf[i]);
-        return 1;
-    }
-
-    char ch, ch2;
-    for (i = 0; i < s; i++) {
-        ch = fgetc(fp);
-        ch2 = Cipher(ch);
-        buf[i] = ch2;
-        if (ch == EOF)
-            return 1;
-    }
-    return 0;
-
 }

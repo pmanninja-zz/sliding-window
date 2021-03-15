@@ -27,16 +27,15 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 
 void clearBuf(char* b);
 int sendFile(FILE* fp, char* buf, int s);
-int recvFile(char* buf, int s);
 char Cipher(char ch);
 
 int main() {
-  int sockfd, nbytes, selection, n, port;
+  int sockfd, nbytes, selection, port;
   struct sockaddr_in servaddr;
   int addrlen = sizeof(servaddr);
   char buffer[BUFFERLEN];
   FILE* fp;
-  socklen_t len = 0;
+
 
   printf("%s","Enter Port Number (example: 15050) enter 2 to use default: ");
   scanf("%d", &port);
@@ -106,7 +105,7 @@ int main() {
     nbytes = recvfrom(sockfd, buffer, BUFFERLEN, sendrecvflag, (struct sockaddr*)&servaddr, &addrlen);
     char path[100] = "./src/server/";
     strcat(path,buffer);
-    
+
     fp = fopen(path,"r");
     printf("\nFile Name Received: %s\n",buffer);
     if(fp == NULL) {
@@ -171,19 +170,4 @@ int sendFile(FILE* fp, char* buf, int s) {
 
 char Cipher(char ch) {
     return ch ^ cipherKey;
-}
-
-int recvFile(char* buf, int s)
-{
-    int i;
-    char ch;
-    for (i = 0; i < s; i++) {
-        ch = buf[i];
-        ch = Cipher(ch);
-        if (ch == EOF)
-            return 1;
-        else
-            printf("%c", ch);
-    }
-    return 0;
 }
