@@ -15,8 +15,8 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 #include <arpa/inet.h>
 
 #define IP_PROTOCOL 0
-#define IP_ADDRESS "127.0.0.1" // localhost
-#define PORT_NO 15050
+#define IP_ADDRESS "127.0.0.1" // localhost || default address
+#define PORT_NO 15050 // default port
 #define BUFFERLEN 32
 #define cipherKey 'S'
 #define sendrecvflag 0
@@ -29,67 +29,59 @@ char Cipher(char ch);
 
 int main() {
   int sockfd, nbytes, len, selection, port;
-  char address[9];
+  char address[20];
   struct sockaddr_in servaddr;
   int addrlen = sizeof(servaddr);
   char buffer[BUFFERLEN];
   FILE* fp;
 
-  printf("%s","Enter port number enter 2 to use default: ");
+  printf("%s","Enter Port Number (example: 15050) enter 2 to use default: ");
   scanf("%d", &port);
+  printf("%s","Enter Address (example: 127.0.0.1) enter 2 to use default: ");
+  scanf("%s", address);
 
   servaddr.sin_family = AF_INET; // ipv4
 
   // port number for what service gets the data that comes from client||host to network short (htons)
+
   if(port == 2) {
     servaddr.sin_port = htons(PORT_NO);
   } else {
     servaddr.sin_port = htons(port);
   }
-  // host address||host to network long (htonl)
-    servaddr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
 
-    // IPv4 socket made|| IPv4,UDP,protocol
-    sockfd = socket(AF_INET, SOCK_DGRAM, IP_PROTOCOL);
+  // host address
+  servaddr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
 
-    // if socket failed to be made output error and exit
-    if (sockfd < 0) {
-      perror("failed to create");
-      exit(EXIT_FAILURE);
-      } else {
-        printf("%s\n","_________________");
-        printf("%s\n","client is running");
-        printf("%s\n","-----------------");
-      }
+  // IPv4 socket made|| IPv4,UDP,protocol
+  sockfd = socket(AF_INET, SOCK_DGRAM, IP_PROTOCOL);
+
+  // if socket failed to be made output error and exit
+  if (sockfd < 0) {
+    perror("failed to create");
+    exit(EXIT_FAILURE);
+  } else {
+    printf("%s\n","_________________");
+    printf("%s\n","client is running");
+    printf("%s\n","-----------------");
+  }
+
   START:
   printf("send an option\n");
-  printf("1)Send single entry\n");
-  printf("2)Recive file entry\n");
-  printf("3)Send file entry\n");
+  printf("1)Recive file entry\n");
+  printf("2)exit program\n");
   printf("Enter a number: ");
   scanf("%d",&selection);
 
-  if (selection == 1 ) {
-    goto SENDSINGLE;
-  } else if(selection == 2) {
+  if(selection == 1) {
     goto RECIVEFILE;
-  } else if(selection == 3) {
-    goto SENDFILE;
+  } else if (selection == 2) {
+    goto END;
   } else {
     printf("Select a valid number");
     goto START;
   }
 
-//________________________________Reciving a single terminal input block (e.g test.txt)__________________
-SENDSINGLE:
-printf("%s\n","Enter your transmision: ");
-fgets(buffer, BUFFERLEN, stdin);
-len = sendto(sockfd, (const char *)buffer, strlen(buffer), 0, (const struct sockaddr*)&servaddr, sizeof(servaddr));
-  if (len == -1) {
-    perror("failed to send");
-  }
-  goto END;
-//_______________________________________________________________________________________________________
 //________________________________Reciving a file  block (e.g test.txt)__________________________________
 RECIVEFILE:
   while (1) {
@@ -108,7 +100,7 @@ RECIVEFILE:
       }
     }
     printf("\n-------------------------------\n");
-    goto END;
+    goto START;
   }
 //_______________________________________________________________________________________________________
 

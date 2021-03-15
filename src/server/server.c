@@ -17,8 +17,8 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 #include <limits.h>
 #include <string.h>
 
-#define BUFFERLEN 32   // how many pending connections queue will hold
-#define IP_ADDRESS "127.0.0.1" // localhost
+#define BUFFERLEN 32
+#define IP_ADDRESS "127.0.0.1" // localhost || default address
 #define PORT_NO 15050  // default port
 #define IP_PROTOCOL 0
 #define cipherKey 'S'
@@ -38,7 +38,7 @@ int main() {
   FILE* fp;
   socklen_t len = 0;
 
-  printf("%s","Enter port number enter 2 to use default: ");
+  printf("%s","Enter Port Number (example: 15050) enter 2 to use default: ");
   scanf("%d", &port);
 
   servaddr.sin_family = AF_INET;  // ipv4
@@ -80,33 +80,21 @@ int main() {
 
   START:
   printf("send an option\n");
-  printf("1)Recive single entry\n");
-  printf("2)Send file entry\n");
+  printf("1)Send file entry\n");
+  printf("2)exit program\n");
   printf("Enter a number: ");
   scanf("%d",&selection);
+  printf("%s\n","-----------------");
 
-  if (selection == 1 ) {
-    goto RECIVESINGLE;
-  } else if(selection == 2) {
+
+  if(selection == 1) {
     goto SENDFILE;
-  } else if(selection == 3) {
-    goto RECIVEFILE;
+  } else if (selection == 2) {
+    goto END;
   } else {
     printf("Select a valid number");
     goto START;
   }
-
-
-
-//________________________________Reciving a line form terminal block (e.g hi my name is)________________________
-  RECIVESINGLE:
-
-  n = recvfrom(sockfd, (char *)buffer, BUFFERLEN, MSG_WAITALL, 0, &len);
-
-  printf("%s","recived transmision : " );
-  printf("%s", buffer);
-  goto END;
-//_______________________________________________________________________________________________________________
 
 
 //________________________________Sending a file block (e.g testfile.txt)________________________________________
@@ -121,9 +109,11 @@ int main() {
     printf("\nFile Name Received: %s\n",buffer);
     if(fp == NULL) {
       printf("\nFile Open Failed!\n");
+      goto START;
     } else {
       printf("\nFile Successfully Opened!\n");
     }
+    printf("%s\n","-----------------");
 
     while(1) {
       if (sendFile(fp,buffer,BUFFERLEN)) {
@@ -135,7 +125,7 @@ int main() {
     }
     if(fp != NULL) {
       fclose(fp);
-      goto END;
+      goto START;
     }
   }
 //______________________________________________________________________________________________________________
