@@ -1,21 +1,5 @@
-# CXX = g++
-# CXXFLAGS = -Wall -Werror -Wextra -pedantic -std=c++17 -g -fsanitize=address
-# LDFLAGS =  -fsanitize=address
-
-# SRC = 
-# OBJ = $(SRC:.cc=.o)
-# EXEC = server client
-
-# all: $(EXEC)
-
-# $(EXEC): $(OBJ)
-# 	$(CXX) $(LDFLAGS) -o $@ $(OBJ) $(LBLIBS)
-
-# clean:
-# 	rm -rf $(OBJ) $(EXEC)
-
 CXX=gcc
-CXXFLAGS= clang
+CXXFLAGS= -Wall
 GXXFLAGS= -o
 
 LINKFLAGS= -lgtest
@@ -38,16 +22,17 @@ all:  $(SERVER) $(CLIENT)
 clean:
 	rm -rf *~ $(SRC_DIR)/*/.o  $(SRC_DIR)/*/server $(SRC_DIR)/*/client \
 	 $(SERVER)  \
+	 $(CLIENT)  \
 
 $(SERVER): $(SRC_DIR)
-	$(CXX) $(GXXFLAGS) $(SERVER) \
+	$(CXX) $(CXXFLAGS) $(GXXFLAGS) $(SERVER) \
 	$(SRC_DIR)/server/*.c
 
 sender: $(SERVER)
 	$(SERVER)
 	
 $(CLIENT): $(SRC_DIR)
-	$(CXX) $(GXXFLAGS) $(CLIENT) \
+	$(CXX) $(CXXFLAGS) $(GXXFLAGS) $(CLIENT) \
 	$(SRC_DIR)/client/*.c
 
 reciever: $(CLIENT)
