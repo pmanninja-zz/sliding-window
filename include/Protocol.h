@@ -10,6 +10,13 @@ struct simplepacket {
   char data[DATA_SZ];  // payload
 };
 
+typedef struct PTYPE
+{
+	unsigned int DATA;
+	unsigned int ACK;
+	unsigned int NACK;
+} PTYPE;
+
 // class to be tested. Implements a simple packet structure consisting of a 16 bit$
 class SimpleHeader {
 private:
