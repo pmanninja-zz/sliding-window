@@ -13,7 +13,7 @@
 
 #define current_time chrono::high_resolution_clock::now
 #define time_stamp chrono::high_resolution_clock::time_point
-#define elapsed_time(end, start) chrono::duration_cast<chrono::milliseconds>(end - start).count()
+#define elapsed_time(end, start)chrono::duration_cast<chrono::milliseconds>(end - start).count()
 #define sleep_for(x) this_thread::sleep_for(chrono::milliseconds(x));
 
 typedef unsigned char byte;
