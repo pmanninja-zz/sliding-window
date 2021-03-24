@@ -1,57 +1,27 @@
-#ifnedf __PROTOCOL_H
-#define __PROTOCOL_H
+#ifndef HELPERS_H
+#define HELPERS_H
 
-#include <cstdint>
-#define DATA_SZ 256
+#include <chrono>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 
-struct simplepacket {
-  uint8_t msb;
-  uint8_t lsb;  // Most significant byte first = Network order
-  char data[DATA_SZ];  // payload
-};
+#define MAX_DATA_SIZE 1024
+#define MAX_FRAME_SIZE 1034
+#define ACK_SIZE 6
 
-typedef struct PTYPE
-{
-	unsigned int DATA;
-	unsigned int ACK;
-	unsigned int NACK;
-} PTYPE;
+#define current_time chrono::high_resolution_clock::now
+#define time_stamp chrono::high_resolution_clock::time_point
+#define elapsed_time(end, start) chrono::duration_cast<chrono::milliseconds>(end - start).count()
+#define sleep_for(x) this_thread::sleep_for(chrono::milliseconds(x));
 
-// class to be tested. Implements a simple packet structure consisting of a 16 bit$
-class SimpleHeader {
-private:
-  struct simplepacket packet;
+typedef unsigned char byte;
 
-public:
-  // default constructor initializes the header to zero.
-  SimpleHeader();
-
-  // sets the 16 bit value of the header
-  void setHeader(unsigned int val);
-
-  // returns the header value
-  unsigned int getHeader() const;
-
-  // returns the size of the packet, including headers and data
-  // to be used with recvfrom() or sendto()
-  int packetSize() const {
-    return sizeof(simplepacket);
-  }
-
-  // returns the size of the payload. Use with reading / writing to/from files
-  int payloadSize() const {
-    return DATA_SZ;
-  }
-
-  // returns pointer to the structure holding the thePacket, including the headers
-  // To be used with recvfrom or sendto
-  void * thePacket() {
-    return &packet;
-  }
-
-  void * thePayload() {
-    return packet.data;
-  }
-};
+char checksum(char *frame, int count);
+int create_frame(int seq_num, char *frame, char *data, int data_size, bool eot);
+void create_ack(int seq_num, char *ack, bool error);
+bool read_frame(int *seq_num, char *data, int *data_size, bool *eot, char *frame);
+bool read_ack(int *seq_num, bool *error, char *ack);
 
 #endif
