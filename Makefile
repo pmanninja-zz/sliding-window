@@ -1,6 +1,6 @@
 CXX=gcc
 CXXFLAGS= -std=c++0x -g -fprofile-arcs -ftest-coverage -o
-GXXFLAGS= -o -Wall
+GXXFLAGS= -std=c++11 -pthread -o
 
 LINKFLAGS= -lgtest
 
@@ -36,18 +36,18 @@ clean:
 	 $(SERVER)  \
 	 $(CLIENT)  \
 
-$(SERVER): $(SRC_DIR)
+$(SERVER): $(SRC_DIR) $(SRC_INCLUDE)/*
 	$(CXX) $(GXXFLAGS) $(SERVER) \
-	$(SRC_DIR)/server/*.c
+	$(SRC_INCLUDE)/*.cc $(SRC_DIR)/server/*.cpp
 	
-sender: $(SERVER)
+sender: $(SERVER) $(SRC_INCLUDE)/*
 	$(SERVER)
 	
-$(CLIENT): $(SRC_DIR)
+$(CLIENT): $(SRC_DIR) $(SRC_INCLUDE)/*
 	$(CXX) $(GXXFLAGS) $(CLIENT) \
-	$(SRC_DIR)/client/*.c
+	$(SRC_INCLUDE)/*.cc $(SRC_DIR)/client/*.cpp
 
-reciever: $(CLIENT)
+reciever: $(CLIENT) $(SRC_INCLUDE)/*
 	$(CLIENT)
 
 tests: $(TEST_DIR)
