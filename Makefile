@@ -32,6 +32,7 @@ clean:
 	*~ $(SRC_DIR)/*/.o  $(SRC_DIR)/*/server $(SRC_DIR)/*/client \
 	 $(SERVER)  \
 	 $(CLIENT)  \
+	 clientFiles/*
 
 $(SERVER): $(SRC_DIR)
 	$(CXX) $(GXXFLAGS) $(SERVER) \
