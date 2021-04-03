@@ -229,6 +229,6 @@ int main(int argc, char *argv[]) {
     delete [] window_sent_time;
     recv_thread.detach();
 
-    cout << "\nThe message has been sent :)" << endl;
+    cout << "\nThe message has been sent." << endl;
     return 0;
 }

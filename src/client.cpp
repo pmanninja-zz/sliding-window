@@ -186,6 +186,6 @@ int main(int argc, char * argv[]) {
     }
     stdby_thread.detach();
 
-    cout << "\nThe message has been recieved :)" << endl;
+    cout << "\nThe message has been recieved" << endl;
     return 0;
 }

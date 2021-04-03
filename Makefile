@@ -36,15 +36,15 @@ clean:
 $(SERVER): $(SRC_DIR)
 	$(CXX) $(GXXFLAGS) $(SERVER) \
 	$(SRC_DIR)/server.cpp $(SRC_DIR)/Protocol.cpp
-	
-sender: $(SERVER) 
+
+sender: $(SERVER)
 	$(SERVER)
-	
-$(CLIENT): $(SRC_DIR) 
+
+$(CLIENT): $(SRC_DIR)
 	$(CXX) $(GXXFLAGS) $(CLIENT) \
 	$(SRC_DIR)/client.cpp $(SRC_DIR)/Protocol.cpp
 
-reciever: $(CLIENT) 
+reciever: $(CLIENT)
 	$(CLIENT)
 
 tests: $(TEST_DIR)
