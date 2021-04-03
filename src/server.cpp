@@ -1,7 +1,8 @@
 /*
-server.c
+server.cpp
 Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 */
+
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -11,7 +12,7 @@ Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
 #include <sys/socket.h>
 #include <netdb.h>
 
-#include "./Protocol.h"
+#include "Protocol.h"
 
 #define TIMEOUT 10
 
@@ -38,8 +39,8 @@ void listen_ack() {
     /* Listen for ack from reciever */
     while (true) {
         socklen_t server_addr_size;
-        ack_size = recvfrom(socket_fd, (char *)ack, ACK_SIZE, 
-                MSG_WAITALL, (struct sockaddr *) &server_addr, 
+        ack_size = recvfrom(socket_fd, (char *)ack, ACK_SIZE,
+                MSG_WAITALL, (struct sockaddr *) &server_addr,
                 &server_addr_size);
         ack_error = read_ack(&ack_seq_num, &ack_neg, ack);
 
@@ -71,40 +72,40 @@ int main(int argc, char *argv[]) {
         dest_ip = argv[4];
         dest_port = atoi(argv[5]);
     } else {
-        cerr << "usage: ./sendfile <filename> <window_len> <buffer_size> <destination_ip> <destination_port>" << endl;
-        return 1; 
+        cerr << "usage: ./server <filename> <window_len> <buffer_size> <destination_ip> <destination_port>" << endl;
+        return 1;
     }
 
-    /* Get hostnet from server hostname or IP address */ 
-    dest_hnet = gethostbyname(dest_ip); 
+    /* Get hostnet from server hostname or IP address */
+    dest_hnet = gethostbyname(dest_ip);
     if (!dest_hnet) {
         cerr << "unknown host: " << dest_ip << endl;
         return 1;
     }
 
-    memset(&server_addr, 0, sizeof(server_addr)); 
-    memset(&client_addr, 0, sizeof(client_addr)); 
+    memset(&server_addr, 0, sizeof(server_addr));
+    memset(&client_addr, 0, sizeof(client_addr));
 
     /* Fill server address data structure */
     server_addr.sin_family = AF_INET;
-    bcopy(dest_hnet->h_addr, (char *)&server_addr.sin_addr, 
-            dest_hnet->h_length); 
+    bcopy(dest_hnet->h_addr, (char *)&server_addr.sin_addr,
+            dest_hnet->h_length);
     server_addr.sin_port = htons(dest_port);
 
     /* Fill client address data structure */
     client_addr.sin_family = AF_INET;
-    client_addr.sin_addr.s_addr = INADDR_ANY; 
+    client_addr.sin_addr.s_addr = INADDR_ANY;
     client_addr.sin_port = htons(0);
 
-    /* Create socket file descriptor */ 
+    /* Create socket file descriptor */
     if ((socket_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         cerr << "socket creation failed" << endl;
         return 1;
     }
 
     /* Bind socket to client address */
-    if (::bind(socket_fd, (const struct sockaddr *)&client_addr, 
-            sizeof(client_addr)) < 0) { 
+    if (::bind(socket_fd, (const struct sockaddr *)&client_addr,
+            sizeof(client_addr)) < 0) {
         cerr << "socket binding failed" << endl;
         return 1;
     }
@@ -142,7 +143,7 @@ int main(int argc, char *argv[]) {
         } else if (buffer_size < max_buffer_size) {
             read_done = true;
         }
-        
+
         window_info_mutex.lock();
 
         /* Initialize sliding window variables */
@@ -159,7 +160,7 @@ int main(int argc, char *argv[]) {
         lfs = lar + window_len;
 
         window_info_mutex.unlock();
-        
+
         /* Send current buffer with sliding window */
         bool send_done = false;
         while (!send_done) {
@@ -199,11 +200,11 @@ int main(int argc, char *argv[]) {
                         int buffer_shift = seq_num * MAX_DATA_SIZE;
                         data_size = (buffer_size - buffer_shift < MAX_DATA_SIZE) ? (buffer_size - buffer_shift) : MAX_DATA_SIZE;
                         memcpy(data, buffer + buffer_shift, data_size);
-                        
+
                         bool eot = (seq_num == seq_count - 1) && (read_done);
                         frame_size = create_frame(seq_num, frame, data, data_size, eot);
 
-                        sendto(socket_fd, frame, frame_size, 0, 
+                        sendto(socket_fd, frame, frame_size, 0,
                                 (const struct sockaddr *) &server_addr, sizeof(server_addr));
                         window_sent_mask[i] = true;
                         window_sent_time[i] = current_time();
@@ -217,12 +218,12 @@ int main(int argc, char *argv[]) {
             if (lar >= seq_count - 1) send_done = true;
         }
 
-        cout << "\r" << "[SENT " << (unsigned long long) buffer_num * (unsigned long long) 
+        cout << "\r" << "[SENT " << (unsigned long long) buffer_num * (unsigned long long)
                 max_buffer_size + (unsigned long long) buffer_size << " BYTES]" << flush;
         buffer_num += 1;
         if (read_done) break;
     }
-    
+
     fclose(file);
     delete [] window_ack_mask;
     delete [] window_sent_time;

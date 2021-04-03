@@ -1,5 +1,5 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
 
 #include <chrono>
 #include <stdlib.h>
