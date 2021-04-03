@@ -1,10 +1,55 @@
-all: client server
+CXX=g++
+CXXFLAGS= -std=c++0x -g -fprofile-arcs -ftest-coverage -o
+GXXFLAGS= -std=c++11 -pthread -o
 
-client: src/Protocol.h src/Protocol.cpp src/client.cpp
-	g++ -std=c++11 -pthread src/Protocol.cpp src/client.cpp -o client
+LINKFLAGS= -lgtest
 
-server: src/Protocol.h src/Protocol.cpp src/server.cpp
-	g++ -std=c++11 -pthread src/Protocol.cpp src/server.cpp -o server
+SRC_DIR = src
 
-clean: client server
-	rm -f client server
+TEST_DIR = test
+
+GCOV = gcov
+LCOV = lcov
+COVERAGE_RESULTS = results.coverage
+COVERAGE_DIR = coverage
+
+PROGRAM_TEST= testProtocol
+
+SERVER = server
+
+CLIENT = client
+
+.PHONY: all
+all:  $(SERVER) $(CLIENT)
+
+# default rule for compiling .cc to .o
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(GXXFLAGS) -c $< -o $@
+
+.PHONY: clean
+clean:
+	rm -rf *~ $(SRC)/*.o *.txt $(TEST_SRC)/*.o *.gcov *.gcda *.gcno \
+	*~ $(SRC_DIR)/*/.o  $(SRC_DIR)/*/server $(SRC_DIR)/*/client \
+	 $(SERVER)  \
+	 $(CLIENT)  \
+
+$(SERVER): $(SRC_DIR)
+	$(CXX) $(GXXFLAGS) $(SERVER) \
+	$(SRC_DIR)/server.cpp $(SRC_DIR)/Protocol.cpp
+	
+sender: $(SERVER) 
+	$(SERVER)
+	
+$(CLIENT): $(SRC_DIR) 
+	$(CXX) $(GXXFLAGS) $(CLIENT) \
+	$(SRC_DIR)/client.cpp $(SRC_DIR)/Protocol.cpp
+
+reciever: $(CLIENT) 
+	$(CLIENT)
+
+tests: $(TEST_DIR)
+	$(CXX) $(CXXFLAGS) testProtocol $(INCLUDE) \
+	$(TEST_DIR)/*  $(LINKFLAGS)
+
+# tests: $(PROGRAM_TEST)
+# 	$(PROGRAM_TEST)
