@@ -17,7 +17,6 @@ TEST(testProtocol, checksum) {
 }
 
 TEST(testProtocol, create_frame) {
-  frame[0] = eot ? 0x0 : 0x1
   uint32_t net_seq_num = htonl(12345);
   uint32_t net_data_size = htonl(1024);
   memcpy(frame + 1, &net_seq_num, 4);
@@ -30,7 +29,6 @@ TEST(testProtocol, create_frame) {
 
 }
 TEST(testProtocol, create_ack) {
-  ack[0] = error ? 0x0 : 0x1;
   uint32_t net_seq_num = htonl(12345);
   memcpy(ack + 1, &net_seq_num, 4);
   ack[5] = checksum(ack, ACK_SIZE - (int) 1);
@@ -40,7 +38,6 @@ TEST(testProtocol, create_ack) {
 
 }
 TEST(testProtocol, read_frame) {
-  *eot = frame[0] == 0x0 ? true : false;
 
   uint32_t net_seq_num;
   memcpy(&net_seq_num, frame + 1, 4);
@@ -57,7 +54,6 @@ TEST(testProtocol, read_frame) {
 
 }
 TEST(testProtocol, read_ack) {
-  *neg = ack[0] == 0x0 ? true : false;
 
   uint32_t net_seq_num;
   memcpy(&net_seq_num, ack + 1, 4);

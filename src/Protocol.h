@@ -1,5 +1,9 @@
-#ifndef HELPERS_H
-#define HELPERS_H
+/*
+Protocol.h
+Author(s): Nwabunor Onwuanyi , Prosper ibhamawu
+*/
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
 
 #include <chrono>
 #include <stdlib.h>
